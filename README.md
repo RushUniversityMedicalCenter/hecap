@@ -4,7 +4,9 @@ Health Equity Care and Analytics Platform supported by Robert Woods Johnson Foun
 
 # Key Supporters
 Dr. David Ansell, MD, Chief Health Equity Officer, RUSH
+
 Dr. Michael Cui, MD, Associate Chief Medical Informatics Officer, RUSH
+
 Anil Saldanha, Chief Innovation Officer, RUSH
 
 # Description of the Project
