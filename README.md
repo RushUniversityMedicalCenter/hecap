@@ -10,7 +10,7 @@ Dr. Michael Cui, MD, Associate Chief Medical Informatics Officer, RUSH
 Anil Saldanha, Chief Innovation Officer, RUSH
 
 # Description of the Project
-TBD
+https://github.com/RushUniversityMedicalCenter/hecap/wiki
 
 # Components of the Project
 Cloud Deployment Software to deploy Hecap
