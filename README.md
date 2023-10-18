@@ -9,6 +9,8 @@ Dr. Michael Cui, MD, Associate Chief Medical Informatics Officer, RUSH
 
 Anil Saldanha, Chief Innovation Officer, RUSH
 
+Dr. Juan Rojas, MD, Director of Data Science, RUSH
+
 # Description of the Project
 https://github.com/RushUniversityMedicalCenter/hecap/wiki
 
