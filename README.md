@@ -12,11 +12,5 @@ Anil Saldanha, Chief Innovation Officer, RUSH
 Dr. Juan Rojas, MD, Director of Data Science, RUSH
 
 # Description of the Project
-https://github.com/RushUniversityMedicalCenter/hecap/wiki
+[HECAP Wiki](https://github.com/RushUniversityMedicalCenter/hecap/wiki/HECAP)
 
-# Components of the Project
-Cloud Deployment Software to deploy Hecap
-
-Machine Learning and Analytics Software to perform Risk Stratification for BP and SDOH
-
-Backend Data Engineering Processes
