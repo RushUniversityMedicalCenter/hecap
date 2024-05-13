@@ -1,0 +1,406 @@
+{
+    "name": "getFHIRData_paginated",
+    "properties": {
+        "description": "Import data from FHIR",
+        "activities": [
+            {
+                "name": "getToken",
+                "type": "WebActivity",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "method": "POST",
+                    "headers": {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    "url": {
+                        "value": "@pipeline().globalParameters.FHIRauthURL",
+                        "type": "Expression"
+                    },
+                    "body": {
+                        "value": "@pipeline().globalParameters.FHIRauthBodyProd",
+                        "type": "Expression"
+                    }
+                }
+            },
+            {
+                "name": "setBearerToken",
+                "type": "SetVariable",
+                "dependsOn": [
+                    {
+                        "activity": "getToken",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "variableName": "token",
+                    "value": {
+                        "value": "@activity('getToken').output.access_token",
+                        "type": "Expression"
+                    }
+                }
+            },
+            {
+                "name": "set token param",
+                "type": "SetVariable",
+                "dependsOn": [
+                    {
+                        "activity": "setBearerToken",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "variableName": "tokenLiteral",
+                    "value": {
+                        "value": "@concat('Bearer: ' ,variables('token'))",
+                        "type": "Expression"
+                    }
+                }
+            },
+            {
+                "name": "FHIRtoCosmos_patient",
+                "type": "Copy",
+                "dependsOn": [
+                    {
+                        "activity": "set token param",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "source": {
+                        "type": "RestSource",
+                        "httpRequestTimeout": "00:01:40",
+                        "requestInterval": "00.00:00:00.010",
+                        "requestMethod": "GET",
+                        "additionalHeaders": {
+                            "Authorization": {
+                                "value": "@variables('tokenLiteral')",
+                                "type": "Expression"
+                            }
+                        },
+                        "paginationRules": {
+                            "AbsoluteUrl": "$.link[0].url",
+                            "EndCondition:$.link[1].relation": "NonExist"
+                        }
+                    },
+                    "sink": {
+                        "type": "JsonSink",
+                        "storeSettings": {
+                            "type": "AzureBlobStorageWriteSettings"
+                        },
+                        "formatSettings": {
+                            "type": "JsonWriteSettings"
+                        }
+                    },
+                    "enableStaging": false
+                },
+                "inputs": [
+                    {
+                        "referenceName": "FhirResourcePatient",
+                        "type": "DatasetReference"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "referenceName": "Json_blob_patient",
+                        "type": "DatasetReference"
+                    }
+                ]
+            },
+            {
+                "name": "FHIRtoCosmos_condition",
+                "type": "Copy",
+                "dependsOn": [
+                    {
+                        "activity": "set token param",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "source": {
+                        "type": "RestSource",
+                        "httpRequestTimeout": "00:01:40",
+                        "requestInterval": "00.00:00:00.010",
+                        "requestMethod": "GET",
+                        "additionalHeaders": {
+                            "Authorization": {
+                                "value": "@variables('tokenLiteral')",
+                                "type": "Expression"
+                            }
+                        },
+                        "paginationRules": {
+                            "AbsoluteUrl": "$.link[0].url",
+                            "EndCondition:$.link[1].relation": "NonExist"
+                        }
+                    },
+                    "sink": {
+                        "type": "JsonSink",
+                        "storeSettings": {
+                            "type": "AzureBlobStorageWriteSettings"
+                        },
+                        "formatSettings": {
+                            "type": "JsonWriteSettings"
+                        }
+                    },
+                    "enableStaging": false
+                },
+                "inputs": [
+                    {
+                        "referenceName": "FhirResourceCondition",
+                        "type": "DatasetReference"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "referenceName": "Json_blob_condition",
+                        "type": "DatasetReference"
+                    }
+                ]
+            },
+            {
+                "name": "FHIRtoCosmos_observation",
+                "type": "Copy",
+                "dependsOn": [
+                    {
+                        "activity": "FHIRtoCosmos_condition",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "source": {
+                        "type": "RestSource",
+                        "httpRequestTimeout": "00:01:40",
+                        "requestInterval": "00.00:00:00.010",
+                        "requestMethod": "GET",
+                        "additionalHeaders": {
+                            "Authorization": {
+                                "value": "@variables('tokenLiteral')",
+                                "type": "Expression"
+                            }
+                        },
+                        "paginationRules": {
+                            "AbsoluteUrl": "$.link[0].url",
+                            "EndCondition:$.link[1].relation": "NonExist"
+                        }
+                    },
+                    "sink": {
+                        "type": "JsonSink",
+                        "storeSettings": {
+                            "type": "AzureBlobStorageWriteSettings"
+                        },
+                        "formatSettings": {
+                            "type": "JsonWriteSettings"
+                        }
+                    },
+                    "enableStaging": false
+                },
+                "inputs": [
+                    {
+                        "referenceName": "FhirResourceObservation",
+                        "type": "DatasetReference"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "referenceName": "Json_blob_observation",
+                        "type": "DatasetReference"
+                    }
+                ]
+            },
+            {
+                "name": "FHIRtoCosmos_encounter",
+                "type": "Copy",
+                "dependsOn": [
+                    {
+                        "activity": "set token param",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "source": {
+                        "type": "RestSource",
+                        "httpRequestTimeout": "00:01:40",
+                        "requestInterval": "00.00:00:00.010",
+                        "requestMethod": "GET",
+                        "additionalHeaders": {
+                            "Authorization": {
+                                "value": "@variables('tokenLiteral')",
+                                "type": "Expression"
+                            }
+                        },
+                        "paginationRules": {
+                            "AbsoluteUrl": "$.link[0].url",
+                            "EndCondition:$.link[1].relation": "NonExist"
+                        }
+                    },
+                    "sink": {
+                        "type": "JsonSink",
+                        "storeSettings": {
+                            "type": "AzureBlobStorageWriteSettings"
+                        },
+                        "formatSettings": {
+                            "type": "JsonWriteSettings"
+                        }
+                    },
+                    "enableStaging": false
+                },
+                "inputs": [
+                    {
+                        "referenceName": "FhirResourceEncounter",
+                        "type": "DatasetReference"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "referenceName": "Json_blob_encounter_mod",
+                        "type": "DatasetReference"
+                    }
+                ]
+            },
+            {
+                "name": "FHIRtoCosmos_procedure",
+                "type": "Copy",
+                "dependsOn": [
+                    {
+                        "activity": "FHIRtoCosmos_encounter",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "source": {
+                        "type": "RestSource",
+                        "httpRequestTimeout": "00:01:40",
+                        "requestInterval": "00.00:00:00.010",
+                        "requestMethod": "GET",
+                        "additionalHeaders": {
+                            "Authorization": {
+                                "value": "@variables('tokenLiteral')",
+                                "type": "Expression"
+                            }
+                        },
+                        "paginationRules": {
+                            "AbsoluteUrl": "$.link[0].url",
+                            "EndCondition:$.link[1].relation": "NonExist"
+                        }
+                    },
+                    "sink": {
+                        "type": "JsonSink",
+                        "storeSettings": {
+                            "type": "AzureBlobStorageWriteSettings"
+                        },
+                        "formatSettings": {
+                            "type": "JsonWriteSettings"
+                        }
+                    },
+                    "enableStaging": false
+                },
+                "inputs": [
+                    {
+                        "referenceName": "FhirResourceProcedure",
+                        "type": "DatasetReference"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "referenceName": "Json_blob_procedure",
+                        "type": "DatasetReference"
+                    }
+                ]
+            }
+        ],
+        "variables": {
+            "token": {
+                "type": "String"
+            },
+            "currID": {
+                "type": "String"
+            },
+            "logicOutput": {
+                "type": "String"
+            },
+            "eachItemId": {
+                "type": "String"
+            },
+            "tokenLiteral": {
+                "type": "String"
+            }
+        },
+        "folder": {
+            "name": "fhir_import"
+        },
+        "annotations": [],
+        "lastPublishTime": "2023-05-03T12:13:50Z"
+    },
+    "type": "Microsoft.DataFactory/factories/pipelines"
+}
