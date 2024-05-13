@@ -1,0 +1,385 @@
+{
+    "name": "blob_to_parquet_fhir_resources",
+    "properties": {
+        "type": "MappingDataFlow",
+        "typeProperties": {
+            "sources": [
+                {
+                    "dataset": {
+                        "referenceName": "Json_blob_patient",
+                        "type": "DatasetReference"
+                    },
+                    "name": "source1"
+                },
+                {
+                    "dataset": {
+                        "referenceName": "Json_blob_condition",
+                        "type": "DatasetReference"
+                    },
+                    "name": "jsonBundleCondition"
+                },
+                {
+                    "dataset": {
+                        "referenceName": "Json_blob_procedure",
+                        "type": "DatasetReference"
+                    },
+                    "name": "jsonBundleProcedure"
+                },
+                {
+                    "dataset": {
+                        "referenceName": "Json_blob_encounter_mod",
+                        "type": "DatasetReference"
+                    },
+                    "name": "jsonBundleEncounterNew"
+                }
+            ],
+            "sinks": [
+                {
+                    "dataset": {
+                        "referenceName": "Json_blob_patient_split",
+                        "type": "DatasetReference"
+                    },
+                    "name": "sinkblobPatient"
+                },
+                {
+                    "dataset": {
+                        "referenceName": "ParquetPatient",
+                        "type": "DatasetReference"
+                    },
+                    "name": "parquetGen2Patient"
+                },
+                {
+                    "dataset": {
+                        "referenceName": "Json_blob_condition_split",
+                        "type": "DatasetReference"
+                    },
+                    "name": "sinkblobCondition"
+                },
+                {
+                    "dataset": {
+                        "referenceName": "ParquetCondition",
+                        "type": "DatasetReference"
+                    },
+                    "name": "parquetGen2Condition"
+                },
+                {
+                    "dataset": {
+                        "referenceName": "Json_blob_procedure_split",
+                        "type": "DatasetReference"
+                    },
+                    "name": "sinkblobProcedure"
+                },
+                {
+                    "dataset": {
+                        "referenceName": "ParquetProcedure",
+                        "type": "DatasetReference"
+                    },
+                    "name": "parquetProcedure"
+                },
+                {
+                    "dataset": {
+                        "referenceName": "ParquetEncounter",
+                        "type": "DatasetReference"
+                    },
+                    "name": "parquetEncounter2"
+                },
+                {
+                    "dataset": {
+                        "referenceName": "Json_blob_encounter_split",
+                        "type": "DatasetReference"
+                    },
+                    "name": "sinkBlobEncounter2"
+                }
+            ],
+            "transformations": [
+                {
+                    "name": "flattenJSON"
+                },
+                {
+                    "name": "subsetPatientCols"
+                },
+                {
+                    "name": "flatten1"
+                },
+                {
+                    "name": "selectcond"
+                },
+                {
+                    "name": "flatten3"
+                },
+                {
+                    "name": "selectproc"
+                },
+                {
+                    "name": "flatten5"
+                },
+                {
+                    "name": "selectEncounter"
+                }
+            ],
+            "scriptLines": [
+                "parameters{",
+                "     passTokenStr as string (\"Bearer\")",
+                "}",
+                "source(output(",
+                "          entry as (fullUrl as string, resource as (active as boolean, address as (city as string, country as string, district as string, line as string[], postalCode as integer, state as string, use as string)[], birthDate as date, communication as (language as (coding as (code as string, display as string, system as string)[], text as string), preferred as boolean)[], contact as (address as (city as string, country as string, district as string, line as string[], postalCode as string, state as string, use as string), name as (family as string, given as string[], text as string, use as string), organization as (display as string), relationship as (coding as (code as string, display as string, system as string)[])[], telecom as (system as string, use as string, value as string)[])[], deceasedBoolean as boolean, extension as (extension as (url as string, valueCoding as (code as string, display as string, system as string), valueInstant as string, valueReference as (reference as string), valueString as string)[], url as string, valueCode as string, valueCodeableConcept as (coding as (code as string, display as string, system as string)[], text as string), valueDateTime as timestamp, valueReference as (display as string, reference as string))[], gender as string, generalPractitioner as (display as string, reference as string)[], id as string, identifier as ({_value} as (extension as (url as string, valueString as string)[]), system as string, type as (text as string), use as string, value as string)[], link as (extension as (url as string, valueInstant as string)[], other as (reference as string), type as string)[], managingOrganization as (display as string, reference as string), maritalStatus as (text as string), meta as (lastUpdated as string, versionId as boolean), multipleBirthInteger as short, name as (family as string, given as string[], prefix as string[], text as string, use as string)[], resourceType as string, telecom as (system as string, use as string, value as string)[]), search as (mode as string))[],",
+                "          id as string,",
+                "          link as (relation as string, url as string)[],",
+                "          meta as (lastUpdated as string),",
+                "          resourceType as string,",
+                "          type as string",
+                "     ),",
+                "     allowSchemaDrift: true,",
+                "     validateSchema: false,",
+                "     inferDriftedColumnTypes: true,",
+                "     ignoreNoFilesFound: false,",
+                "     documentForm: 'documentPerLine') ~> source1",
+                "source(output(",
+                "          resourceType as string,",
+                "          id as string,",
+                "          meta as (lastUpdated as string),",
+                "          type as string,",
+                "          link as (relation as string, url as string)[],",
+                "          entry as (fullUrl as string, resource as (resourceType as string, id as string, meta as (versionId as string, lastUpdated as string), clinicalStatus as (coding as (system as string, version as string, code as string, display as string)[], text as string), category as (coding as (system as string, code as string, display as string)[], text as string)[], code as (text as string), subject as (reference as string, display as string), abatementDateTime as string, recordedDate as string, recorder as (reference as string, display as string)), search as (mode as string))[]",
+                "     ),",
+                "     allowSchemaDrift: true,",
+                "     validateSchema: false,",
+                "     inferDriftedColumnTypes: true,",
+                "     ignoreNoFilesFound: false,",
+                "     documentForm: 'documentPerLine') ~> jsonBundleCondition",
+                "source(output(",
+                "          resourceType as string,",
+                "          id as string,",
+                "          meta as (lastUpdated as string),",
+                "          type as string,",
+                "          link as (relation as string, url as string)[],",
+                "          entry as (fullUrl as string, resource as (resourceType as string, id as string, meta as (versionId as string, lastUpdated as string), extension as (url as string, valueString as string)[], status as string, category as (coding as (system as string, code as string, display as string)[], text as string), code as (text as string), subject as (reference as string, display as string), performedDateTime as string), search as (mode as string))[]",
+                "     ),",
+                "     allowSchemaDrift: true,",
+                "     validateSchema: false,",
+                "     inferDriftedColumnTypes: true,",
+                "     ignoreNoFilesFound: false,",
+                "     documentForm: 'documentPerLine') ~> jsonBundleProcedure",
+                "source(output(",
+                "          resourceType as string,",
+                "          id as string,",
+                "          meta as (lastUpdated as string),",
+                "          type as string,",
+                "          link as (relation as string, url as string)[],",
+                "          entry as (fullUrl as string, resource as (resourceType as string, id as string, meta as (versionId as string, lastUpdated as string), identifier as (use as string, system as string, value as string)[], status as string, class as (system as string, code as string, display as string), type as (coding as (system as string, code as string, display as string)[], text as string)[], subject as (reference as string, display as string), participant as (type as (coding as (system as string, code as string, display as string)[], text as string)[], individual as (reference as string, display as string))[], period as (start as string, end as string), account as (identifier as (system as string, value as string), display as string)[], hospitalization as (admitSource as (coding as (system as string, code as string, display as string)[], text as string), dischargeDisposition as (coding as (system as string, code as string, display as string)[], text as string)), location as (location as (reference as string, display as string))[]), search as (mode as string))[]",
+                "     ),",
+                "     allowSchemaDrift: false,",
+                "     validateSchema: false,",
+                "     ignoreNoFilesFound: false,",
+                "     documentForm: 'documentPerLine') ~> jsonBundleEncounterNew",
+                "source1 foldDown(unroll(entry, entry),",
+                "     mapColumn(",
+                "          fhirEntry = entry",
+                "     ),",
+                "     skipDuplicateMapInputs: false,",
+                "     skipDuplicateMapOutputs: false) ~> flattenJSON",
+                "flattenJSON select(mapColumn(",
+                "          resourceType = fhirEntry.resource.resourceType,",
+                "          id = fhirEntry.resource.id,",
+                "          birthDate = fhirEntry.resource.birthDate,",
+                "          address = fhirEntry.resource.address,",
+                "          communication = fhirEntry.resource.communication,",
+                "          deceasedBoolean = fhirEntry.resource.deceasedBoolean,",
+                "          extension = fhirEntry.resource.extension,",
+                "          gender = fhirEntry.resource.gender,",
+                "          generalPractitioner = fhirEntry.resource.generalPractitioner,",
+                "          identifier = fhirEntry.resource.identifier,",
+                "          managingOrganization = fhirEntry.resource.managingOrganization,",
+                "          name = fhirEntry.resource.name,",
+                "          lastUpdated = fhirEntry.resource.meta.lastUpdated,",
+                "          fullUrl = fhirEntry.fullUrl,",
+                "          telecom = fhirEntry.resource.telecom",
+                "     ),",
+                "     skipDuplicateMapInputs: true,",
+                "     skipDuplicateMapOutputs: true) ~> subsetPatientCols",
+                "jsonBundleCondition foldDown(unroll(entry, entry),",
+                "     mapColumn(",
+                "          fhirEntry = entry",
+                "     ),",
+                "     skipDuplicateMapInputs: false,",
+                "     skipDuplicateMapOutputs: false) ~> flatten1",
+                "flatten1 select(mapColumn(",
+                "          id = fhirEntry.resource.id,",
+                "          resourceType = fhirEntry.resource.resourceType,",
+                "          lastUpdated = fhirEntry.resource.meta.lastUpdated,",
+                "          category = fhirEntry.resource.category,",
+                "          code = fhirEntry.resource.code,",
+                "          subjectRef = fhirEntry.resource.subject.reference,",
+                "          recordedDate = fhirEntry.resource.recordedDate,",
+                "          clinicalStatus = fhirEntry.resource.clinicalStatus",
+                "     ),",
+                "     skipDuplicateMapInputs: true,",
+                "     skipDuplicateMapOutputs: true) ~> selectcond",
+                "jsonBundleProcedure foldDown(unroll(entry, entry),",
+                "     mapColumn(",
+                "          fhirEntry = entry",
+                "     ),",
+                "     skipDuplicateMapInputs: false,",
+                "     skipDuplicateMapOutputs: false) ~> flatten3",
+                "flatten3 select(mapColumn(",
+                "          id = fhirEntry.resource.id,",
+                "          resourceType = fhirEntry.resource.resourceType,",
+                "          lastUpdated = fhirEntry.resource.meta.lastUpdated,",
+                "          categorytext = fhirEntry.resource.category.text,",
+                "          code = fhirEntry.resource.code,",
+                "          performedDateTime = fhirEntry.resource.performedDateTime,",
+                "          status = fhirEntry.resource.status,",
+                "          subjectRef = fhirEntry.resource.subject.reference",
+                "     ),",
+                "     skipDuplicateMapInputs: true,",
+                "     skipDuplicateMapOutputs: true) ~> selectproc",
+                "jsonBundleEncounterNew foldDown(unroll(entry, entry),",
+                "     mapColumn(",
+                "          fhirEntry = entry",
+                "     ),",
+                "     skipDuplicateMapInputs: false,",
+                "     skipDuplicateMapOutputs: false) ~> flatten5",
+                "flatten5 select(mapColumn(",
+                "          resourceType = fhirEntry.resource.resourceType,",
+                "          id = fhirEntry.resource.id,",
+                "          lastUpdated = fhirEntry.resource.meta.lastUpdated,",
+                "          status = fhirEntry.resource.status,",
+                "          classDisplay = fhirEntry.resource.class.display,",
+                "          patientRef = fhirEntry.resource.subject.reference,",
+                "          encounterType = fhirEntry.resource.type[1].coding[1].display,",
+                "          periodStart = fhirEntry.resource.period.start,",
+                "          periodEnd = fhirEntry.resource.period.end,",
+                "          locationDisplay = fhirEntry.resource.location[1].location.display,",
+                "          participantIndividual = fhirEntry.resource.participant[1].individual.display,",
+                "          HospAdmitSource = fhirEntry.resource.hospitalization.admitSource.text,",
+                "          HospDishchargDisp = fhirEntry.resource.hospitalization.dischargeDisposition.text,",
+                "          HAR = fhirEntry.resource.account[1].identifier.value",
+                "     ),",
+                "     skipDuplicateMapInputs: true,",
+                "     skipDuplicateMapOutputs: true) ~> selectEncounter",
+                "subsetPatientCols sink(allowSchemaDrift: true,",
+                "     validateSchema: false,",
+                "     truncate: true,",
+                "     skipDuplicateMapInputs: true,",
+                "     skipDuplicateMapOutputs: true,",
+                "     mapColumn(",
+                "          resourceType,",
+                "          id,",
+                "          birthDate,",
+                "          address,",
+                "          communication,",
+                "          deceasedBoolean,",
+                "          extension,",
+                "          gender,",
+                "          generalPractitioner,",
+                "          identifier,",
+                "          managingOrganization,",
+                "          name,",
+                "          lastUpdated,",
+                "          fullUrl,",
+                "          telecom",
+                "     )) ~> sinkblobPatient",
+                "subsetPatientCols sink(allowSchemaDrift: true,",
+                "     validateSchema: false,",
+                "     format: 'parquet',",
+                "     truncate: true,",
+                "     umask: 0777,",
+                "     preCommands: [],",
+                "     postCommands: [],",
+                "     skipDuplicateMapInputs: true,",
+                "     skipDuplicateMapOutputs: true,",
+                "     mapColumn(",
+                "          resourceType,",
+                "          id,",
+                "          birthDate,",
+                "          address,",
+                "          communication,",
+                "          deceasedBoolean,",
+                "          extension,",
+                "          gender,",
+                "          generalPractitioner,",
+                "          identifier,",
+                "          managingOrganization,",
+                "          name,",
+                "          lastUpdated,",
+                "          fullUrl,",
+                "          telecom",
+                "     )) ~> parquetGen2Patient",
+                "selectcond sink(allowSchemaDrift: true,",
+                "     validateSchema: false,",
+                "     truncate: true,",
+                "     skipDuplicateMapInputs: true,",
+                "     skipDuplicateMapOutputs: true) ~> sinkblobCondition",
+                "selectcond sink(allowSchemaDrift: true,",
+                "     validateSchema: false,",
+                "     format: 'parquet',",
+                "     truncate: true,",
+                "     umask: 0777,",
+                "     preCommands: [],",
+                "     postCommands: [],",
+                "     skipDuplicateMapInputs: true,",
+                "     skipDuplicateMapOutputs: true) ~> parquetGen2Condition",
+                "selectproc sink(allowSchemaDrift: true,",
+                "     validateSchema: false,",
+                "     truncate: true,",
+                "     skipDuplicateMapInputs: true,",
+                "     skipDuplicateMapOutputs: true) ~> sinkblobProcedure",
+                "selectproc sink(allowSchemaDrift: true,",
+                "     validateSchema: false,",
+                "     format: 'parquet',",
+                "     truncate: true,",
+                "     umask: 0777,",
+                "     preCommands: [],",
+                "     postCommands: [],",
+                "     skipDuplicateMapInputs: true,",
+                "     skipDuplicateMapOutputs: true) ~> parquetProcedure",
+                "selectEncounter sink(allowSchemaDrift: true,",
+                "     validateSchema: false,",
+                "     format: 'parquet',",
+                "     truncate: true,",
+                "     umask: 0777,",
+                "     preCommands: [],",
+                "     postCommands: [],",
+                "     skipDuplicateMapInputs: true,",
+                "     skipDuplicateMapOutputs: true,",
+                "     mapColumn(",
+                "          resourceType,",
+                "          id,",
+                "          lastUpdated,",
+                "          status,",
+                "          classDisplay,",
+                "          patientRef,",
+                "          encounterType,",
+                "          periodStart,",
+                "          periodEnd,",
+                "          locationDisplay,",
+                "          participantIndividual,",
+                "          HospAdmitSource,",
+                "          HospDishchargDisp,",
+                "          HAR",
+                "     )) ~> parquetEncounter2",
+                "selectEncounter sink(allowSchemaDrift: true,",
+                "     validateSchema: false,",
+                "     truncate: true,",
+                "     skipDuplicateMapInputs: true,",
+                "     skipDuplicateMapOutputs: true,",
+                "     mapColumn(",
+                "          resourceType,",
+                "          id,",
+                "          lastUpdated,",
+                "          status,",
+                "          classDisplay,",
+                "          patientRef,",
+                "          encounterType,",
+                "          periodStart,",
+                "          periodEnd,",
+                "          locationDisplay,",
+                "          participantIndividual,",
+                "          HospAdmitSource,",
+                "          HospDishchargDisp,",
+                "          HAR",
+                "     )) ~> sinkBlobEncounter2"
+            ]
+        }
+    }
+}
