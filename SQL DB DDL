@@ -1,0 +1,86 @@
+
+CREATE TABLE [dbo].[PATIENT_DIM](
+	[id] [varchar](100) NULL,
+	[MRN] [nvarchar](50) NULL,
+	[birthDate] [varchar](100) NULL,
+	[address_use] [nvarchar](10) NULL,
+	[address_line1] [nvarchar](50) NULL,
+	[address_line2] [nvarchar](50) NULL,
+	[address_city] [nvarchar](50) NULL,
+	[address_state] [nvarchar](50) NULL,
+	[address_postalCode] [nvarchar](50) NULL,
+	[familyName] [varchar](100) NULL,
+	[givenName] [varchar](100) NULL,
+	[phone_use] [varchar](50) NULL,
+	[phone_number] [varchar](50) NULL,
+	[email] [varchar](100) NULL,
+	[language] [varchar](100) NULL,
+	[PCP] [varchar](255) NULL,
+	[last_ED_DT] [varchar](50) NULL,
+	[mobile_number] [varchar](50) NULL,
+	[pref_email] [varchar](50) NULL,
+	[pref_mobile] [varchar](50) NULL,
+	[gender] [varchar](50) NULL
+);
+
+CREATE TABLE [dbo].[BP_READINGS_FACT](
+	[id] [varchar](100) NULL,
+	[Patient_ID] [varchar](100) NULL,
+	[Encounter_ID] [varchar](100) NULL,
+	[codetext] [varchar](100) NULL,
+	[effectivedatetime] [datetime] NULL,
+	[SYSTOLIC] [numeric](18, 0) NULL,
+	[DIASTOLIC] [numeric](18, 0) NULL,
+	[SRC_SYSTEM] [varchar](100) NULL
+);
+
+CREATE TABLE [dbo].[PATIENT_MED_DATA](
+	[Patient_ID] [varchar](100) NULL,
+	[patient_name] [varchar](201) NOT NULL,
+	[birthDate] [varchar](100) NULL,
+	[email] [varchar](100) NULL,
+	[phone_number] [varchar](50) NULL,
+	[MRN] [nvarchar](50) NULL,
+	[preferred_language] [varchar](100) NULL,
+	[avg_diastolic_bp_7_days] [numeric](38, 6) NULL,
+	[avg_systolic_bp_7_days] [numeric](38, 6) NULL,
+	[avg_1_days_bp] [varchar](83) NOT NULL,
+	[avg_2_days_bp] [varchar](83) NOT NULL,
+	[avg_3_days_bp] [varchar](83) NOT NULL,
+	[critial_value] [varchar](11) NOT NULL,
+	[patient_group] [varchar](15) NOT NULL,
+	[first_reading_date] [datetime] NULL,
+	[latest_reading_date] [datetime] NULL,
+	[overall_average] [varchar](83) NOT NULL,
+	[latest_bp_reading] [varchar](83) NOT NULL,
+	[days_enrolled] [int] NULL
+) ;
+
+CREATE TABLE [dbo].[sdoh_final_qa_stg](
+	[MRN] [varchar](max) NULL,
+	[is_unemployed] [varchar](max) NULL,
+	[is_without_house] [varchar](max) NULL,
+	[is_worried_losing_house] [varchar](max) NULL,
+	[is_gone_without_utilities_12months] [varchar](max) NULL,
+	[is_lack_transport_kept_from_medical_appointments_3months] [varchar](max) NULL,
+	[is_worried_food_run_out_3months] [varchar](max) NULL,
+	[is_run_out_food_12months] [varchar](max) NULL,
+	[first_name] [varchar](max) NULL,
+	[last_name] [varchar](max) NULL,
+	[status] [varchar](max) NULL,
+	[survey_response_date] [varchar](max) NULL,
+	[transportation_needs] [int] NULL,
+	[general_needs] [int] NULL,
+	[food_needs] [int] NULL,
+	[utilities_needs] [int] NULL,
+	[housing_needs] [int] NULL,
+	[total_no_of_needs] [int] NULL,
+	[DOB] [varchar](max) NULL,
+	[prefered_language] [varchar](max) NULL,
+	[zipcode] [varchar](max) NULL,
+	[ed_discharge_date] [varchar](max) NULL,
+	[rush_primary_care_provider] [varchar](max) NULL,
+	[patient_aco_registry] [varchar](max) NULL,
+	[phone_number] [varchar](50) NULL,
+	[hecap_program] [varchar](50) NULL
+);
