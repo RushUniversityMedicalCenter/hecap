@@ -1,0 +1,14 @@
+{
+  "bindings": [
+    {
+      "name": "myTimer",
+      "type": "timerTrigger",
+      "direction": "in",
+      "schedule": "0 30 18 * * 1-5"
+    }
+  ],
+  "scriptFile": "../dist/qualtricsJob/index.js"
+}
+
+//"schedule": "0 30 18 * * 1-5"
+//"schedule": "0 */2 * * * *"

@@ -1,0 +1,2 @@
+first_name,last_name,email,phone,birthdate,address_line1,address_line2,address_city,address_state,address_postal_code,
+submit_date,worried_food,runout_food,no_housing,worried_housing,lack_transportation,no_utilities,employment,additional_info,signature

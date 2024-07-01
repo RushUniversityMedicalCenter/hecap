@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/e5282183-61c9-4c17-a58a-9442db9594d5/resourceGroups/RU-A-NonProd-Cobra-Study-RG/providers/Microsoft.Web/sites/hecapadmindev",
+    "appService.deploySubpath": "dist"
+}
