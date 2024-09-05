@@ -29,7 +29,7 @@ export async function epicPatientLookup(request: HttpRequest, context: Invocatio
             results.push(result)
         }
         responseCode = 200
-        context.log('===epicPatientLookup function results:::', responseCode, results.length, url, auth);
+        context.log('===epicPatientLookup function results:::', responseCode, results.length, url);
     } catch (exc) {
         responseCode = 409 //409: Conflict
         context.log('===epicPatientLookup function exception:::', responseCode);
