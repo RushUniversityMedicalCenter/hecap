@@ -32,7 +32,7 @@ export async function epicPatientLookup(request: HttpRequest, context: Invocatio
         context.log('===epicPatientLookup function results:::', responseCode, results.length, url, auth);
     } catch (exc) {
         responseCode = 409 //409: Conflict
-        context.log('===epicPatientLookup function exception:::', responseCode, exc);
+        context.log('===epicPatientLookup function exception:::', responseCode);
     } finally {
         context.log('===epicPatientLookup function finally:::', responseCode);
         return  {
@@ -60,22 +60,22 @@ async function callTestApi(context, url, auth) {
                     rejectUnauthorized: false
                   });
                 const response = await axios.get(url, {headers, httpsAgent: agent});
-                context.log("=================callTestApi(auth) response:", response.data)
+                context.log("=================callTestApi(auth) response:")
                 
                 return response.data; // Assuming the data is in the response.data property
             }  catch (error) {
-                console.error('Error fetching data:', error);
-                throw error; // Or handle the error differently
+                console.error('Error fetching data:', error.code);
+                //throw error; // Or handle the error differently
               }
         } else {
           const response = await axios.get(url);
-          context.log("=================callTestApi(no auth) response:", response.data)
+          context.log("=================callTestApi(no auth) response:")
           return response.data; // Assuming the data is in the response.data property
         }
 
       } catch (error) {
-        console.error('Error fetching data:', error);
-        throw error; // Or handle the error differently
+        console.error('Error fetching data:', error.code);
+        //throw error; // Or handle the error differently
       }
 }
 async function callEpicApi(context, url, auth, epic_client_id, epic_user_id) {
@@ -90,12 +90,12 @@ async function callEpicApi(context, url, auth, epic_client_id, epic_user_id) {
             rejectUnauthorized: false
           });
         const response = await axios.get(url, {headers, httpsAgent: agent});
-        context.log("=================epic response:", response.data)
+        context.log("=================epic response:")
         
         return response.data; // Assuming the data is in the response.data property
       } catch (error) {
-        console.error('Error fetching data:', error);
-        throw error; // Or handle the error differently
+        console.error('======Error fetching data:', error.code);
+        //throw error; // Or handle the error differently
       }
 }
 
