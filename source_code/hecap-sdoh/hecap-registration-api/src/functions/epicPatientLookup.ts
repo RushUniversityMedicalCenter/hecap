@@ -11,6 +11,8 @@ export async function epicPatientLookup(request: HttpRequest, context: Invocatio
         //results = await daoSql.listHecapPatients(context);
         const url = process.env.EPIC_ENDPOINT
         const auth = process.env.EPIC_AUTH
+        const epic_client_id = process.env.EPIC_CLIENT_ID
+        const epic_user_id = process.env.EPIC_USER_ID
         let mode = request.query.get('mode')
         const testurl = request.query.get('testurl')
         const testauth = request.query.get('testauth')
@@ -23,7 +25,7 @@ export async function epicPatientLookup(request: HttpRequest, context: Invocatio
             results.push(result)
         } else {
             context.log('===epicPatientLookup call EPIC API......');
-            let result = await callEpicApi(context, url, auth)
+            let result = await callEpicApi(context, url, auth, epic_client_id, epic_user_id)
             results.push(result)
         }
         responseCode = 200
@@ -76,11 +78,11 @@ async function callTestApi(context, url, auth) {
         throw error; // Or handle the error differently
       }
 }
-async function callEpicApi(context, url, auth) {
+async function callEpicApi(context, url, auth, epic_client_id, epic_user_id) {
     try {
         const headers = {
-            'EPIC-CLIENT-ID': '0dd959bf-4504-4450-9fcb-33b77d649ee1',
-            'EPIC-USER-ID': '929999',
+            'EPIC-CLIENT-ID': epic_client_id,
+            'EPIC-USER-ID': epic_user_id,
             'EPIC-USER-IDType': 'EXTERNAL',
             'Authorization': auth,
           };

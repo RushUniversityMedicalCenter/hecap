@@ -30,7 +30,6 @@
               <v-btn-toggle class="rush_btn_padding_top" v-model="answer1" rounded="1" color="#00A66c" divided>
                 <v-btn variant="outlined" value="yes">Yes</v-btn>
                 <v-btn variant="outlined" value="no">No</v-btn>
-                <v-btn variant="outlined" value="refuse">Prefer not to answer</v-btn>
               </v-btn-toggle>
             </div>
           </v-card-text>
@@ -46,7 +45,6 @@
               <v-btn-toggle class="rush_btn_padding_top" v-model="answer2" rounded="1" color="#00A66c" divided>
                 <v-btn variant="outlined" value="yes">Yes</v-btn>
                 <v-btn variant="outlined" value="no">No</v-btn>
-                <v-btn variant="outlined" value="refuse">Prefer not to answer</v-btn>
               </v-btn-toggle>
             </div>
           </v-card-text>
@@ -62,7 +60,6 @@
               <v-btn-toggle class="rush_btn_padding_top" v-model="answer3" rounded="1" color="#00A66c" divided>
                 <v-btn variant="outlined" value="yes">Yes</v-btn>
                 <v-btn variant="outlined" value="no">No</v-btn>
-                <v-btn variant="outlined" value="refuse">Prefer not to answer</v-btn>
               </v-btn-toggle>
             </div>
           </v-card-text>
@@ -78,7 +75,6 @@
               <v-btn-toggle class="rush_btn_padding_top" v-model="answer4" rounded="1" color="#00A66c" divided>
                 <v-btn variant="outlined" value="yes">Yes</v-btn>
                 <v-btn variant="outlined" value="no">No</v-btn>
-                <v-btn variant="outlined" value="refuse">Prefer not to answer</v-btn>
               </v-btn-toggle>
             </div>
           </v-card-text>
@@ -94,7 +90,6 @@
               <v-btn-toggle class="rush_btn_padding_top" v-model="answer5" rounded="1" color="#00A66c" divided>
                 <v-btn variant="outlined" value="yes">Yes</v-btn>
                 <v-btn variant="outlined" value="no">No</v-btn>
-                <v-btn variant="outlined" value="refuse">Prefer not to answer</v-btn>
               </v-btn-toggle>
             </div>
           </v-card-text>
@@ -110,7 +105,6 @@
               <v-btn-toggle class="rush_btn_padding_top" v-model="answer6" rounded="1" color="#00A66c" divided>
                 <v-btn variant="outlined" value="yes">Yes</v-btn>
                 <v-btn variant="outlined" value="no">No</v-btn>
-                <v-btn variant="outlined" value="refuse">Prefer not to answer</v-btn>
               </v-btn-toggle>
             </div>
           </v-card-text>
@@ -126,7 +120,6 @@
               <v-btn-toggle class="rush_btn_padding_top" v-model="answer7" rounded="1" color="#00A66c" divided>
                 <v-btn variant="outlined" value="yes">Yes</v-btn>
                 <v-btn variant="outlined" value="no">No</v-btn>
-                <v-btn variant="outlined" value="refuse">Prefer not to answer</v-btn>
               </v-btn-toggle>
             </div>
           </v-card-text>
@@ -305,7 +298,7 @@ function gotoProfilePage() {
   appStore.setShowCloseButton(false)
   appStore.setShowUserData(false)
   if (!validateDemographyForm()) {
-    //return
+    return
   }
   if (validateAnswers(answers)) {
     appStore.setIsPositive(true)

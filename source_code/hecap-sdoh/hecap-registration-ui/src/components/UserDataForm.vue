@@ -4,13 +4,25 @@
       <v-sheet max-width="900" class="mx-auto" style="padding-top: 1px;">  
       <v-row class="d-flex align-center" style="max-width: 900px;">
         <v-col>
-        <div v-if="showContactInfoOnly" style="display: flex; margin-bottom: 10px;">
+        <!-- <div v-if="showContactInfoOnly" style="display: flex; margin-bottom: 10px;">
           <v-card  height="98%" variant="outlined">
             <v-card-text class="pa-3" >
-            <v-label class="text-wrap font-weight-bold">Thank you for your interest. Please fill out the contact information form to stay connected and be contacted for future programs. Your information will be kept confidential and will not be shared with any third parties.</v-label>
-          </v-card-text>
+              <div class="text-wrap font-weight-bold">
+                Thank you for your interest! Please review the <a href="#" @click.prevent="openInfoSheet">Rush Information Sheet</a> for details of participation 
+                and fill out the contact form to stay in touch and be informed about future programs. 
+                Your information will be kept confidential and not shared with any third parties.</div>
+            </v-card-text>
+          </v-card>
+        </div> -->
+      <PopupComponent v-model:isOpen="dialogOpen" :pdfUrl="pdfUrlPath"/>
+      <v-card  height="98%" variant="outlined">
+            <v-card-text class="pa-3" >
+              <div class="text-wrap font-weight-bold">
+                Thank you for your interest! Please review the <a href="#" @click.prevent="openInfoSheet">Rush Information Sheet</a> for details of participation 
+                and fill out the contact form to stay in touch and be informed about future programs. 
+                Your information will be kept confidential and not shared with any third parties.</div>
+            </v-card-text>
         </v-card>
-      </div>
         <v-card  height="98%" variant="outlined">
           <div v-if="showAge">
             <v-label>You must be 18 years or older to participate in this study.</v-label>
@@ -48,6 +60,7 @@
 <script lang="ts" setup>
 import { ref, onMounted, computed } from "vue";
 import { useAppStore } from '@/store/app';
+import PopupComponent from '@/components/Popup.vue'
 
 const appStore = useAppStore()
 const firstname = ref()
@@ -60,6 +73,7 @@ const prefEmail = ref()
 const prefSms = ref()
 const emailField = ref()
 const phoneField = ref()
+
 
 const showContactInfoOnly = appStore.showContactInfoOnly
 const showAge = computed(() => {
@@ -198,6 +212,12 @@ function initUserData() {
   //appStore.setIsAgeConfirmed(false)
   //appStore.setShowCloseButton(false)
   //appStore.setShowUserData(false)
+}
+
+const pdfUrlPath = ref("HECAP-Information-Sheet.pdf")
+const dialogOpen = ref(false)
+function openInfoSheet() {
+  dialogOpen.value = true
 }
 
 onMounted(() => {

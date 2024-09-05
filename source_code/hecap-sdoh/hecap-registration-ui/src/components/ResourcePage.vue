@@ -12,8 +12,9 @@
             Your participation is invaluable and greatly appreciated. You screened NEGATIVE but may have needs or know others with needs.
           </div>
           <div class="font-weight-medium rush_text_spacing">
-            <a href="#">“Click here”</a> to see additional resources for any immediate needs. 
+            <a href="#" @click.prevent="openPdf">“Click here”</a> to see additional resources for any immediate needs. 
           </div>
+          <PopupComponent v-model:isOpen="dialogOpen" :pdfUrl="pdfUrlPath"/>
           <div class="text-h6 rush_text_spacing">
             Would you be interested in staying connected and receiving updates about our upcoming programs?
           </div>
@@ -37,8 +38,9 @@
             Your participation is invaluable and greatly appreciated. You screened POSITIVE and may have needs.
           </div>
           <div class="font-weight-medium rush_text_spacing">
-            <a href="#">“Click here”</a> to see additional resources for any immediate needs. 
+            <a href="#" @click.prevent="openPdf">“Click here”</a> to see additional resources for any immediate needs. 
           </div>
+          <PopupComponent v-model:isOpen="dialogOpen" :pdfUrl="pdfUrlPath"/>
           <div class="text-h6 rush_text_spacing">
             Q1: Would you like Rush to connect you with a social worker or community health worker for available support? 
           </div>
@@ -82,12 +84,18 @@
 import {ref} from "vue";
 import router from "@/router";
 import {useAppStore} from '@/store/app';
+import PopupComponent from '@/components/Popup.vue'
 const appStore = useAppStore()
 const showPositiveInfo = appStore.showPositiveInfo
 const wantRushSupport = ref()
 const wantUpcomingProgram = ref()
 const reasonRushOffer = ref()
 
+const pdfUrlPath = ref("Rush_Resource_NowPow.pdf")
+const dialogOpen = ref(false)
+async function openPdf() {
+  dialogOpen.value = true
+}
 async function selectShareData(){
   //console.log("===selectShareData: values:", wantRushSupport.value, wantUpcomingProgram.value, 
   //appStore.isAgeConfirmed, appStore.userData, appStore.surveyAnswers, appStore.demographyData)

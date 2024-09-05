@@ -11,9 +11,9 @@
       </v-row>
       <ResourcePage />
       <div v-if="showUserData">
-        <div v-if="showConsentForm">
+        <!-- <div v-if="showConsentForm">
           <ConsentFormSimple />
-        </div>
+        </div> -->
         <UserDataForm />
         <v-row class="d-flex row_margin button_wrapper" >
           <v-btn block class="mt-2" @click="submitProfile" v-if="isShowUserDataSubmitButton">Submit</v-btn>
@@ -31,14 +31,14 @@ import router from "@/router";
 import { onMounted, computed } from "vue";
 import { useAppStore } from '@/store/app';
 import {submitRushSurvey} from "@/services/submitSurvey";
-import ConsentFormSimple from '@/components/ConsentFormSimple.vue'
+//import ConsentFormSimple from '@/components/ConsentFormSimple.vue'
 import ResourcePage from '@/components/ResourcePage.vue'
 import UserDataForm from '@/components/UserDataForm.vue'
 
 const appStore = useAppStore()
-const showConsentForm = computed(() => {
-  return appStore.showConsentForm
-})
+// const showConsentForm = computed(() => {
+//   return appStore.showConsentForm
+// })
 
 const showUserData = computed(() => {
   return appStore.showUserData
