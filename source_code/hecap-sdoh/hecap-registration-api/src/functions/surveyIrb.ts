@@ -8,7 +8,7 @@ const {upload} = require('../blob/blobOperations')
 const {buildHtmlConsentForm} = require('../htmlBuilder/builder')
 
 export async function surveyIrb(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
-    context.log('===regQualtrics function start to process a request......');
+    context.log('===surveyIrb function start to process a request......(v20240924)');
     let responseCode = 405; //405: Method Not Allowed
     let results = []
     try {

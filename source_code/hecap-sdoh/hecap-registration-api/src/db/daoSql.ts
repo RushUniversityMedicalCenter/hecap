@@ -76,7 +76,7 @@ export class HecapSqlAccess {
                                 ON e.hecap_id = s.patient_id 
                                 WHERE e.firstname is not null 
                                 ORDER BY e.createdAt DESC `
-            context.log("===listPatients.sql:::SELECT TOP ", HECAP_NUM_PATIENT_SQL)    
+            //context.log("===listPatients.sql:::SELECT TOP ", HECAP_NUM_PATIENT_SQL)    
             var pool = await this.getPoolConnection(context)
             //context.log("===listPatients.getPoolConnection:pool.pool.used, pool.pool.free:", pool.pool.used, pool.pool.free)
             var resultSet = await pool.request().query(sqlStatement);
@@ -152,10 +152,10 @@ export class HecapSqlAccess {
             VALUES ('${data.hecap_id}', '${enFirstName}', '${enLastName}', 
                     '${enEmail}', '${enPhone}', '${hecap_group_name}', 
                     '${enBirthdate}', '${currentDatetime}', '${enSignature}', '${sms_email}')`
-            context.log("===insertHecapPatient.sql:", sqlStatement)
+            //context.log("===insertHecapPatient.sql:", sqlStatement)
             var pool = await this.getPoolConnection(context)
             var res = await pool.request().query(sqlStatement);
-            context.log("===insertHecapPatient.res:", res);
+            //context.log("===insertHecapPatient.res:", res);
             // close connection only when we're certain application is finished
             //poolConnection.close();
             return res
@@ -180,7 +180,7 @@ export class HecapSqlAccess {
              sms_email, email, group_name, phone)
             VALUES ('${id}', '${mrn}', '${status}', '${updateBy}', '${currentDatetime}', 
             '${sms_email}', '${enEmail}', '${group_name}', '${enPhone}')`
-            context.log("===insertPatientStatus.sql:", sqlStatement)
+            //context.log("===insertPatientStatus.sql:", sqlStatement)
             var pool = await this.getPoolConnection(context)
             var res = await pool.request().query(sqlStatement);
             //context.log("===insertPatientStatus.res:", res);
@@ -198,15 +198,17 @@ export class HecapSqlAccess {
             const currentDatetime = new Date().toISOString(); 
             let sqlStatement = `INSERT INTO he.HECAP_SURVEY_SDOH 
             (patient_id, patient_dim_mrn, updateTime, 
-             answer1, answer2, answer3, answer4, answer5, answer6, answer7, answer8, 
-             want_upcoming_program, want_rush_support, reason_rush_offer, reason_share_info)
+             answer1, answer2, answer3, answer4, answer5, answer6, answer7, 
+             want_upcoming_program, want_rush_support, reason_rush_offer, reason_share_info, 
+             age, gender, ethnicity, race)
             VALUES ('${hecap_id}', '${hecap_id}',  '${currentDatetime}', 
                    '${surveyPayload.surveyAnswers.answer1}', '${surveyPayload.surveyAnswers.answer2}', '${surveyPayload.surveyAnswers.answer3}', 
                    '${surveyPayload.surveyAnswers.answer4}', '${surveyPayload.surveyAnswers.answer5}', '${surveyPayload.surveyAnswers.answer6}', 
-                   '${surveyPayload.surveyAnswers.answer7}', '${surveyPayload.surveyAnswers.answer8}',
-                   '${surveyPayload.wantUpcomingProgram}', '${surveyPayload.wantRushSupport}',
-                   '${surveyPayload.reasonRushOffer}', '${surveyPayload.reasonShareInfo}')`
-            context.log("===insertPatientStatus.sql:", sqlStatement)
+                   '${surveyPayload.surveyAnswers.answer7}', '${surveyPayload.wantUpcomingProgram}', '${surveyPayload.wantRushSupport}',
+                   '${surveyPayload.reasonRushOffer}', '${surveyPayload.reasonShareInfo}', 
+                   '${surveyPayload.demographyData.age}', '${surveyPayload.demographyData.gender}', 
+                   '${surveyPayload.demographyData.ethnicity}', '${surveyPayload.demographyData.race}')`
+            //context.log("===insertPatientStatus.sql:", sqlStatement)
             var pool = await this.getPoolConnection(context)
             var res = await pool.request().query(sqlStatement);
             //context.log("===insertPatientStatus.res:", res);

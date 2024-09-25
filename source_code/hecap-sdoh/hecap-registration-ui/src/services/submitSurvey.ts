@@ -4,12 +4,11 @@ export const submitRushSurvey = async function (body: any) {
     const apiHost = `${import.meta.env.VITE_API_URL}`;
     const surveyUrl = apiHost + '/api/surveyIrb'
     try{
-        const res = await fetchWrapper.post(surveyUrl, body)
-        if (res.results) {
-            return res.results
-        }
+        await fetchWrapper.post(surveyUrl, body)
+        return 1
     } catch(err) {
         console.log("===rushSurvey API error:", err)
+        return 0
     }
-    return null
+    
 }

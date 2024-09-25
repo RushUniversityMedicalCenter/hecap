@@ -10,18 +10,6 @@
         </v-col>
       </v-row>
       <ResourcePage />
-      <div v-if="showUserData">
-        <!-- <div v-if="showConsentForm">
-          <ConsentFormSimple />
-        </div> -->
-        <UserDataForm />
-        <v-row class="d-flex row_margin button_wrapper" >
-          <v-btn block class="mt-2" @click="submitProfile" v-if="isShowUserDataSubmitButton">Submit</v-btn>
-        </v-row>
-      </div>
-      <v-row class="d-flex row_margin button_wrapper" v-if="showCloseButton">
-        <v-btn block class="mt-2" @click="back" >Close and go back to homepage</v-btn>
-      </v-row>
     </v-responsive>
   </v-container>
 </template>
@@ -33,24 +21,8 @@ import { useAppStore } from '@/store/app';
 import {submitRushSurvey} from "@/services/submitSurvey";
 //import ConsentFormSimple from '@/components/ConsentFormSimple.vue'
 import ResourcePage from '@/components/ResourcePage.vue'
-import UserDataForm from '@/components/UserDataForm.vue'
 
 const appStore = useAppStore()
-// const showConsentForm = computed(() => {
-//   return appStore.showConsentForm
-// })
-
-const showUserData = computed(() => {
-  return appStore.showUserData
-}) 
-
-const showCloseButton = computed(() => {
-  return appStore.showCloseButton
-})
-const isShowUserDataSubmitButton = computed(() => {
-    //return appStore.isAgeConfirmed
-    return true
-})
 
 function back() {
   router.push({path: '/'})
@@ -99,39 +71,6 @@ function getPreferredMethod(prefEmail: any, prefSms: any) {
         return "Sms"
     }
     return ""
-}
-
-async function submitProfile() {
-  let formData = appStore.userData
-  let isValidEmailPhone = validateMissingEmailPhone(formData)
-  let signed = validateSignature()
-  
-  console.log("=====validtion:", isValidEmailPhone, signed, appStore.wantRushSupport)
-
-  if(!isValidEmailPhone) {
-    alert('invalid email or phone nubmer!')
-    return
-  }
-
-  if(isValidEmailPhone && !signed && appStore.wantRushSupport == 'yes' && appStore.isPositive) {
-    alert('Please sign the consent!')
-    return
-  }
-  formData.sms_email = getPreferredMethod(formData.prefEmail, formData.prefSms)
-  formData.group_name = 'HECAP_SDOH_SURVEY'
-  formData.phone = formatPhoneNumber(formData.phone)
-  formData.signature = appStore.signature
-  formData.wantUpcomingProgram = appStore.wantUpcomingProgram
-  formData.wantRushSupport = appStore.wantRushSupport
-  formData.reasonRushOffer = appStore.reasonRushOffer
-  formData.reasonShareInfo = appStore.reasonShareInfo
-  formData.surveyAnswers = appStore.surveyAnswers
-  formData.demographyData = appStore.demographyData
-  
-  console.log("=====submitProfile:", formData)
-  await submitRushSurvey(formData)
-  router.push({path: '/end'})
-
 }
 
 function resetUserData() {

@@ -14,9 +14,11 @@
         <v-card variant="plain" height="90%">
           <v-card-text class="pa-3" height="100%">
           <div class="font-weight-medium">
-            At Rush, we care about more than just your health. We invite you to take part in a quick survey to see if you may be eligible for resources, like food and utilities support, in your community. 
-            <br>Our objective is to pilot a screening program aimed at gauging community interest in accessing social resources online and willingness to share information, potentially facilitating connections to both clinical and social support services that are available
+            We invite you to take a quick survey to help us understand if you have any social needs that might affect your health, like food, housing, or employment. After completing the survey, you’ll receive a list of helpful Rush resources and contact information for our social care team.  
+            <br>Our goal is to see if using online surveys is an effective and affordable way to screen for health-related social needs in the community.
+            <br>Please review the <a href="#" @click.prevent="openInfoSheet">"Rush Information Sheet"</a> for more details about the study. By completing the survey, you agree to participate in this research.
           </div>
+          <PopupComponent v-model:isOpen="dialogOpen" :pdfUrl="pdfUrlPath"/>
           </v-card-text>
         </v-card>
       </v-row>
@@ -140,7 +142,7 @@
       <v-row class="d-flex row_margin">
     <v-card height="98%" width="80%" variant="outlined">
       <v-row>
-        <v-col cols="4">
+        <v-col cols="6">
           <v-select
             v-model="age"
             :items="ageOptions"
@@ -149,7 +151,7 @@
             hide-details
           ></v-select>
         </v-col>
-        <v-col cols="4">
+        <v-col cols="6">
           <v-select
             v-model="gender"
             :items="genderOptions"
@@ -157,15 +159,6 @@
             required
             hide-details
           ></v-select>
-        </v-col>
-        <v-col cols="4">
-          <v-text-field
-            v-model="zipcode"
-            :counter="50"
-            hide-details
-            label="Zip Code*"
-            required
-          ></v-text-field>
         </v-col>
       </v-row>
       <v-row>
@@ -196,7 +189,7 @@
   </div>
       </v-row>
       <v-row class="d-flex row_margin">
-        <v-btn block class="mt-2" @click="gotoProfilePage">Next</v-btn>
+        <v-btn block class="mt-2" @click="submitSurvey">Submit</v-btn>
       </v-row>
     </v-responsive>
   </v-container>
@@ -206,6 +199,8 @@
 import router from "@/router";
 import { useAppStore } from '@/store/app';
 import { ref, onMounted} from "vue";
+import {submitRushSurvey} from "@/services/submitSurvey";
+import PopupComponent from '@/components/Popup.vue'
 const appStore = useAppStore()
 
 const age = ref()
@@ -215,7 +210,7 @@ const ethnicity = ref()
 const race = ref()
 const validationWarning = ref()
 
-const genderOptions = ['Male', 'Female', 'Other']
+const genderOptions = ['Female', 'Male', 'Non-Binary', "Prefer not to say"]
 const ageOptions = ['18-33', '34-48', '49-63', '64-78', '78+']
 const raceOptions = ['American Indian or Alaska Native', 'Asian', 'Black or African American', 'Native Hawaiian or Other Pacific Islander', 'White']
 const ethnicityOptions = ['Hispanic or Latino', 'Not Hispanic or Latino']
@@ -244,9 +239,6 @@ function validateDemographyForm() {
   if (gender.value == null) {
     emptyFields.push("Gender")
   }
-  if (zipcode.value == null) {
-    emptyFields.push("Zip Code")
-  }
   if (ethnicity.value == null) {
     emptyFields.push("Ethnicity")
   }
@@ -274,7 +266,7 @@ function validateAnswers(answers: any) {
   }
 }
 
-function gotoProfilePage() {
+async function submitSurvey() {
   let answers = {
     'answer1': answer1.value || '',
     'answer2': answer2.value || '',
@@ -283,7 +275,7 @@ function gotoProfilePage() {
     'answer5': answer5.value || '',
     'answer6': answer6.value || '',
     'answer7': answer7.value || '',
-    'answer8': answer8.value || '',
+    'answer8': reasonNotShareInfo.value || '',
   }
   let demographyData = {
     "age": age.value,
@@ -307,7 +299,20 @@ function gotoProfilePage() {
     appStore.setIsPositive(false)
     appStore.setShowCloseButton(false)
   }
-  router.push({path: '/profile'})
+  let formData = appStore.userData
+  formData.hecap_id = "SurveyOnly"
+  formData.group_name = 'HECAP_SDOH_SURVEY'
+  formData.surveyAnswers = appStore.surveyAnswers
+  formData.reasonShareInfo = appStore.reasonShareInfo
+  formData.demographyData = appStore.demographyData
+  
+  let res =  await submitRushSurvey(formData)
+  if(res == 0) {
+    console.log("Please try again.")
+  } else {
+    router.push({path: '/profile'})
+  }
+
 }
 
 function initGlobalConfig() {
@@ -323,6 +328,12 @@ function initGlobalConfig() {
   appStore.setSurveyAnswers({})
   appStore.setSignature('')
   appStore.setUserData({})
+}
+
+const pdfUrlPath = ref("HECAP_Information Sheet_Clean_9924.pdf")
+const dialogOpen = ref(false)
+function openInfoSheet() {
+  dialogOpen.value = true
 }
 
 onMounted(() => {

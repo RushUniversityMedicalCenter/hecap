@@ -14,18 +14,14 @@
           <div class="font-weight-medium rush_text_spacing">
             <a href="#" @click.prevent="openPdf">“Click here”</a> to see additional resources for any immediate needs. 
           </div>
-          <PopupComponent v-model:isOpen="dialogOpen" :pdfUrl="pdfUrlPath"/>
-          <div class="text-h6 rush_text_spacing">
-            Would you be interested in staying connected and receiving updates about our upcoming programs?
+          <div class="font-weight-medium rush_text_spacing">
+            For additional support related to your social needs from the Rush Social Care Provider Team, please call (800) 757-0202.
           </div>
-          </v-card-text>
-          <v-card-text class="pa-3">
-            <div class="rush_btn_center">
-              <v-btn-toggle class="rush_btn_padding_top" v-model="wantRushSupport"  rounded="1" color="#00A66c" divided>
-                <v-btn variant="outlined" value="yes" @click="selectShareData" class="rush_wider-button">Yes</v-btn>
-                <v-btn variant="outlined" value="no" @click="selectShareData" class="rush_wider-button">No</v-btn>
-              </v-btn-toggle>
-            </div>
+          <div class="font-weight-medium rush_text_spacing">
+            Your participation is crucial in advancing our understanding of social determinants of health and shaping future research initiatives. If you have any questions about the program, please feel free to reach out to us at hecap@rush.edu. 
+          </div>
+          <v-btn block class="mt-2" @click="back" >Close and go back to homepage</v-btn>
+          <PopupComponent v-model:isOpen="dialogOpen" :pdfUrl="pdfUrlPath"/>
           </v-card-text>
         </v-card>
 
@@ -38,40 +34,16 @@
             Your participation is invaluable and greatly appreciated. You screened POSITIVE and may have needs.
           </div>
           <div class="font-weight-medium rush_text_spacing">
-            <a href="#" @click.prevent="openPdf">“Click here”</a> to see additional resources for any immediate needs. 
+            <a href="#" @click.prevent="openPdf">"Click here"</a> to see additional resources for any immediate needs. 
           </div>
           <PopupComponent v-model:isOpen="dialogOpen" :pdfUrl="pdfUrlPath"/>
-          <div class="text-h6 rush_text_spacing">
-            Q1: Would you like Rush to connect you with a social worker or community health worker for available support? 
+          <div class="font-weight-medium rush_text_spacing">
+            For additional support related to your social needs from the Rush Social Care Provider Team, please call (800) 757-0202.
           </div>
           <div class="font-weight-medium rush_text_spacing">
-            Rush may connect you with a social worker or community health worker for the support available. If you would like to be connected, or included in future research, please click “Yes” to complete demographic and consent form. Click “No” to be exited.   
+            Your participation is crucial in advancing our understanding of social determinants of health and shaping future research initiatives. If you have any questions about the program, please feel free to reach out to us at hecap@rush.edu. 
           </div>
-          <div class="rush_btn_center">
-              <v-btn-toggle class="rush_btn_padding_top" v-model="wantRushSupport"  rounded="1" color="#00A66c" divided>
-                <v-btn variant="outlined" value="yes" @click="selectShareData" class="rush_wider-button">Yes</v-btn>
-                <v-btn variant="outlined" value="no" @click="selectShareData" class="rush_wider-button">No</v-btn>
-              </v-btn-toggle>
-          </div>
-          <div class="text-h6 rush_text_spacing">
-            Q2: Would you be interested in receiving updates about our upcoming programs? 
-          </div>
-          <div class="rush_btn_center">
-              <v-btn-toggle class="rush_btn_padding_top" v-model="wantUpcomingProgram"  rounded="1" color="#00A66c" divided>
-                <v-btn variant="outlined" value="yes" @click="selectShareData" class="rush_wider-button">Yes</v-btn>
-                <v-btn variant="outlined" value="no" @click="selectShareData" class="rush_wider-button">No</v-btn>
-              </v-btn-toggle>
-          </div>
-          </v-card-text>
- 
-          <v-card-text class="pa-3">
-            <div class="text-h6 rush_text_spacing">
-              Q3:Are there any that factors influenced your decision to permit or decline Rush's offer to connect you with support?
-            </div>
-           
-            <div>
-              <v-textarea v-model="reasonRushOffer" label=""  row-height="20" rows="2"  @input="inputReasonRushOffer"></v-textarea>
-            </div>
+          <v-btn block class="mt-2" @click="back" >Close and go back to homepage</v-btn>
           </v-card-text>
         </v-card>
       </v-row>
@@ -155,6 +127,11 @@ async function selectShareData(){
 function inputReasonRushOffer(event: any) {
   appStore.setReasonRushOffer(event.target.value)
 }
+
+function back() {
+  router.push({path: '/'})
+}
+
 </script>
 <style scoped>
 .row_margin {
