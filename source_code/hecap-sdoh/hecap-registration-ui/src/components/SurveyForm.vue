@@ -15,8 +15,8 @@
           <v-card-text class="pa-3" height="100%">
           <div class="font-weight-medium">
             We invite you to take a quick survey to help us understand if you have any social needs that might affect your health, like food, housing, or employment. After completing the survey, you’ll receive a list of helpful Rush resources and contact information for our social care team.  
-            <br>Our goal is to see if using online surveys is an effective and affordable way to screen for health-related social needs in the community.
-            <br>Please review the <a href="#" @click.prevent="openInfoSheet">"Rush Information Sheet"</a> for more details about the study. By completing the survey, you agree to participate in this research.
+            <br><br>Our goal is to see if using online surveys is an effective and affordable way to screen for health-related social needs in the community.
+            <br><br>Please review the <a href="#" @click.prevent="openInfoSheet">"Rush Information Sheet"</a> for more details about the study. By completing the survey, you agree to participate in this research.
           </div>
           <PopupComponent v-model:isOpen="dialogOpen" :pdfUrl="pdfUrlPath"/>
           </v-card-text>
@@ -189,7 +189,7 @@
   </div>
       </v-row>
       <v-row class="d-flex row_margin">
-        <v-btn block class="mt-2" @click="submitSurvey">Submit</v-btn>
+        <v-btn block class="mt-2" @click="submitSurvey" :disabled="isSubmitting || isSubmitted">Submit</v-btn>
       </v-row>
     </v-responsive>
   </v-container>
@@ -222,7 +222,6 @@ const answer4 = ref()
 const answer5 = ref()
 const answer6 = ref()
 const answer7 = ref()
-const answer8 = ref()
 const reasonNotShareInfo = ref()
 
 function validateDemographyForm() {
@@ -266,51 +265,65 @@ function validateAnswers(answers: any) {
   }
 }
 
+const isSubmitting = ref(false)
+const isSubmitted = ref(false)
+
+
 async function submitSurvey() {
-  let answers = {
-    'answer1': answer1.value || '',
-    'answer2': answer2.value || '',
-    'answer3': answer3.value || '',
-    'answer4': answer4.value || '',
-    'answer5': answer5.value || '',
-    'answer6': answer6.value || '',
-    'answer7': answer7.value || '',
-    'answer8': reasonNotShareInfo.value || '',
-  }
-  let demographyData = {
-    "age": age.value,
-    "gender": gender.value,
-    "zipcode": zipcode.value,
-    "ethnicity": ethnicity.value,
-    "race": race.value
-  }
-  appStore.setSurveyAnswers(answers)
-  appStore.setReasonShareInfo(reasonNotShareInfo.value)
-  appStore.setDemographyData(demographyData)
-  appStore.setShowCloseButton(false)
-  appStore.setShowUserData(false)
-  if (!validateDemographyForm()) {
-    return
-  }
-  if (validateAnswers(answers)) {
-    appStore.setIsPositive(true)
-    appStore.setShowPositiveInfo(true)
-  } else {
-    appStore.setIsPositive(false)
+  if (isSubmitting.value || isSubmitted.value) return
+  isSubmitting.value = true
+  try {
+    let answers = {
+      'answer1': answer1.value || '',
+      'answer2': answer2.value || '',
+      'answer3': answer3.value || '',
+      'answer4': answer4.value || '',
+      'answer5': answer5.value || '',
+      'answer6': answer6.value || '',
+      'answer7': answer7.value || '',
+      'answer8': reasonNotShareInfo.value || '',
+    }
+    let demographyData = {
+      "age": age.value,
+      "gender": gender.value,
+      "zipcode": zipcode.value,
+      "ethnicity": ethnicity.value,
+      "race": race.value
+    }
+    appStore.setSurveyAnswers(answers)
+    appStore.setReasonShareInfo(reasonNotShareInfo.value)
+    appStore.setDemographyData(demographyData)
     appStore.setShowCloseButton(false)
-  }
-  let formData = appStore.userData
-  formData.hecap_id = "SurveyOnly"
-  formData.group_name = 'HECAP_SDOH_SURVEY'
-  formData.surveyAnswers = appStore.surveyAnswers
-  formData.reasonShareInfo = appStore.reasonShareInfo
-  formData.demographyData = appStore.demographyData
-  
-  let res =  await submitRushSurvey(formData)
-  if(res == 0) {
-    console.log("Please try again.")
-  } else {
-    router.push({path: '/profile'})
+    appStore.setShowUserData(false)
+    if (!validateDemographyForm()) {
+      return
+    }
+    if (validateAnswers(answers)) {
+      appStore.setIsPositive(true)
+      appStore.setShowPositiveInfo(true)
+    } else {
+      appStore.setIsPositive(false)
+      appStore.setShowCloseButton(false)
+    }
+    let formData = appStore.userData
+    formData.hecap_id = "SurveyOnly"
+    formData.group_name = 'HECAP_SDOH_SURVEY'
+    formData.surveyAnswers = appStore.surveyAnswers
+    formData.reasonShareInfo = appStore.reasonShareInfo
+    formData.demographyData = appStore.demographyData
+    
+    let res =  await submitRushSurvey(formData)
+    if(res == 0) {
+      isSubmitted.value = false
+      console.log("Please try again.")
+    } else {
+      isSubmitted.value = true
+      router.push({path: '/profile'})
+    }
+  } catch(error) {
+    isSubmitted.value = false
+  } finally {
+    isSubmitting.value = false
   }
 
 }
