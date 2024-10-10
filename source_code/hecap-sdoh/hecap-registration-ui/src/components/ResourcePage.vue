@@ -9,7 +9,7 @@
             <b>Thank you for Completing the Survey! </b>
           </div>
           <div class="font-weight-medium rush_text_spacing">
-            Your participation is invaluable and greatly appreciated. You screened NEGATIVE but may have needs or know others with needs.
+            Your participation is invaluable and greatly appreciated. You, or someone you know, may need additional support.
           </div>
           <div class="font-weight-medium rush_text_spacing">
             <a href="#" @click.prevent="openPdf">“Click here”</a> to see additional resources for any immediate needs. 
@@ -31,7 +31,7 @@
             <b>Thank you for Completing the Survey! </b>
           </div>
           <div class="font-weight-medium rush_text_spacing">
-            Your participation is invaluable and greatly appreciated. You screened POSITIVE and may have needs.
+            Your participation is invaluable and greatly appreciated. You, or someone you know, may need additional support.
           </div>
           <div class="font-weight-medium rush_text_spacing">
             <a href="#" @click.prevent="openPdf">"Click here"</a> to see additional resources for any immediate needs. 
